@@ -1,16 +1,8 @@
 # iRC ROS Controllers
 
 This package contains the custom controllers for the iRC ROS project:
-- [Dashboard Controller](#dashboard-controller)
 - [DIO Controller](#dio-controller)
-- Gripper Controller ([External DIO](#external-dio-gripper) / [ECBPMI](#ecbpmi)) 
 
-## Dashboard Controller
-The Dashboard Controller is used to monitor and control the different modules. Currently this is only possible for CPRCANv2, in the future an implementation for CRI might be possible.
-The interface works by listening to a multitude of the modules interfaces, in addition to topics such as `/joint_states`, and combines all the information. To simplify listening to the many interfaces `Semantic Component Interfaces` are used. Another example how these work can be found under Links at the end of this readme.
-The message types used are defined in `irc_ros_msgs`. 
-
-More information about the dashboard itself can be found in the `irc_ros_dashboard` package.
 
 ## DIO Controller
 Adds a controller for using DIOs via CAN. The command outputs are for the Rebel_01, if you have a very early rebel model or a different robot please note that it will look different for you. The ReBeL 01 has two inputs and outputs in the arm and seven of each in the base.
@@ -96,49 +88,6 @@ $ ros2 topic list
 [...]
 /external_dio_controller/get_inputs
 [...]
-```
-
-### External DIO Gripper
-A gripper connected to the CAN bus via an external DIO-Module is also controlled over the dio controller as follows:
-
-``` console
-$ ros2 topic pub --once /external_dio_controller/set_outputs irc_ros_msgs/msg/DioCommand '{names:[dio_ext/digital_output_0, ],outputs: [True, ]}'
-```
-
-Note: The meshes included by the respective urdf files are not correct, instead the same as the ones for the ECBPMI are used temporarily.
-
-## ECBPMI
-Controller for the [Schmalz ECBPMI](https://www.schmalz.com/en-us/vacuum-technology-for-robotics/vacuum-generators/vacuum-generators-ecbpmi-312576/) vacuum gripper. Since the grasp/release functionality and feedback are more complicated than toggling a single digital output a separate controller is implemented.
-One of the signals control the generate vacuum pin (normally dio_arm/digital_output_0), which starts the pump until a stable vacuum is detected. The release vacuum pin (normally dio_arm/digital_output_1) vacates the vacuum again and thus releases the grasped object.
-The gripper gives feedback if a vacuum is currently active (normally dio_arm_digital_input_0). The controller waits for this signal after a grip/release command to confirm the success. If a timeout of 1 second (Set in the schamlz_ecbpmi_controller.hpp) is reached the controller replies that the gripping was unsuccessful.
-A second output signal is available for user definable feedback (normally dio_arm_digital_input_1), which is currently not implemented in the controller.
-
-
-### Command
-Gripping is possible via topic and service call:
-``` console
-$ ros2 topic pub --once /ecbpmi_controller/set_gripper irc_ros_msgs/msg/GripperCommand "{grip: false}"
-```
-
-Setting states via service call can be done like this:
-
-``` console
-$ ros2 service call /ecbpmi_controller/set_gripper irc_ros_msgs/srv/GripperCommand "{grip: true}"
-```
-
-The service response is equivalent to the state topic content.
-
-### State
-The gripper state is published to a topic. It provides information if the vacuum is stable, meaning the gripper is successfully gripping.
-
-``` console
-$ ros2 topic echo /ecbpmi_controller/gripper_state
-header:
-  stamp:
-    sec: 1675961396
-    nanosec: 456334931
-  frame_id: ''
-grasped: false
 ```
 
 ## Platform Controller
