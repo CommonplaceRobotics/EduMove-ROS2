@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="EduMove" >
+
+  <!-- Controller settings -->  
+  <xacro:arg name="hardware_protocol" default="cri"/>
+
+  <!-- Include and call rebel macro -->
+  <xacro:include filename="$(find irc_ros_description)/urdf/serviceRobots/eduMove.description.xacro" />
+  <xacro:include filename="$(find irc_ros_description)/urdf/serviceRobots/eduMove.ros2_control.xacro" />
+
+  <xacro:EduMove_system pltfprefix="platform" rebelprefix="rebel"/>
+  <xacro:EduMoveControl pltfprefix="platform" rebelprefix="rebel" hardware_protocol='cri'/>
+</robot>

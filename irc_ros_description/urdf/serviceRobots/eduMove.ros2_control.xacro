@@ -1,0 +1,22 @@
+<?xml version="1.0" ?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+  
+    <xacro:include filename="$(find irc_ros_description)/urdf/robots/igus_rebel_6dof_01.ros2_control.xacro" />
+    <xacro:include filename="$(find irc_ros_description)/urdf/platforms/eduMove_base.ros2_control.xacro" />
+    
+    <xacro:macro name="EduMoveControl" params="hardware_protocol rebelprefix pltfprefix">
+        <ros2_control name="EduMove" type="system">	
+            
+            <hardware>
+                <xacro:if value="${hardware_protocol == 'cri'}">
+                <plugin>irc_hardware/IrcRosCri</plugin>
+                <param name="ip">192.168.3.11</param>
+                </xacro:if>
+            </hardware>
+
+            <xacro:igus_rebel_6dof_01_ros2_control prefix="${rebelprefix}" hardware_protocol="${hardware_protocol}" continuous_last_joint="false"/>
+            <xacro:EduMove_baseControl prefix="${pltfprefix}" hardware_protocol="${hardware_protocol}"/>
+                    
+        </ros2_control> 
+    </xacro:macro> 
+</robot> 

@@ -1,0 +1,137 @@
+<namespace>/controller_manager:
+  ros__parameters:
+    update_rate: 100 # 100Hz for CAN and 10Hz for CRI
+
+    joint_state_broadcaster:
+      type: joint_state_broadcaster/JointStateBroadcaster
+
+    # joint_trajectory_controller:
+    #   type: joint_trajectory_controller/JointTrajectoryController
+
+    joint_velocity_controller:
+      type: velocity_controllers/JointGroupVelocityController
+
+    dio_controller:
+      type: irc_ros_controllers/DIOController
+
+    ecbpmi_controller:
+      type: irc_ros_controllers/EcbpmiController
+
+    dashboard_controller:
+      type: irc_ros_controllers/DashboardController
+
+<namespace>/joint_velocity_controller:
+  ros_parameters:
+    joints:
+      - <prefix>joint1
+      - <prefix>joint2
+      - <prefix>joint3
+      - <prefix>joint4
+      - <prefix>joint5
+      - <prefix>joint6
+
+# <namespace>/joint_trajectory_controller:
+#   ros__parameters:
+#     joints: 
+#       - <prefix>joint1
+#       - <prefix>joint2
+#       - <prefix>joint3
+#       - <prefix>joint4
+#       - <prefix>joint5
+#       - <prefix>joint6
+
+#     command_interfaces:
+#       - position
+#       - velocity
+    
+#     state_interfaces:
+#       - position
+#       - velocity
+
+#     state_publish_rate: 100.0 # Defaults to 50
+#     action_monitor_rate: 100.0 # Defaults to 20
+
+#     open_loop_control: true
+#     allow_partial_joints_goal: true
+
+
+<namespace>/dio_controller:
+  ros__parameters:
+    digital_inputs: 
+      - <prefix>dio_arm/digital_input_0
+      - <prefix>dio_arm/digital_input_1
+      - <prefix>dio_base/digital_input_0
+      - <prefix>dio_base/digital_input_1
+      - <prefix>dio_base/digital_input_2
+      - <prefix>dio_base/digital_input_3
+      - <prefix>dio_base/digital_input_4
+      - <prefix>dio_base/digital_input_5
+      - <prefix>dio_base/digital_input_6
+
+    digital_outputs:
+      - <prefix>dio_arm/digital_output_0
+      - <prefix>dio_arm/digital_output_1
+      - <prefix>dio_base/digital_output_0
+      - <prefix>dio_base/digital_output_1
+      - <prefix>dio_base/digital_output_2
+      - <prefix>dio_base/digital_output_3
+      - <prefix>dio_base/digital_output_4
+      - <prefix>dio_base/digital_output_5
+      - <prefix>dio_base/digital_output_6
+
+# TODO: Rate limit this from 100Hz (Issue #74)
+<namespace>/dashboard_controller:
+  ros__parameters:
+    joints: 
+      - <prefix>joint1
+      - <prefix>joint2
+      - <prefix>joint3
+      - <prefix>joint4
+      - <prefix>joint5
+      - <prefix>joint6
+      # - joint_wheel_1
+      # - joint_wheel_2
+
+    gpios:
+      - <prefix>dio_arm
+      - <prefix>dio_base
+      # - dio_ext
+
+    joint_state_interfaces:
+      - position
+      - velocity
+      - effort
+    
+    joint_command_interface:
+      - position
+      # - velocity
+      # - effort
+
+    digital_inputs: 
+      - <prefix>dio_arm/digital_input_0
+      - <prefix>dio_arm/digital_input_1
+      - <prefix>dio_base/digital_input_0
+      - <prefix>dio_base/digital_input_1
+      - <prefix>dio_base/digital_input_2
+      - <prefix>dio_base/digital_input_3
+      - <prefix>dio_base/digital_input_4
+      - <prefix>dio_base/digital_input_5
+      - <prefix>dio_base/digital_input_6
+
+    digital_outputs:
+      - <prefix>dio_arm/digital_output_0
+      - <prefix>dio_arm/digital_output_1
+      - <prefix>dio_base/digital_output_0
+      - <prefix>dio_base/digital_output_1
+      - <prefix>dio_base/digital_output_2
+      - <prefix>dio_base/digital_output_3
+      - <prefix>dio_base/digital_output_4
+      - <prefix>dio_base/digital_output_5
+      - <prefix>dio_base/digital_output_6
+
+<namespace>/ecbpmi_controller:
+  ros__parameters:
+    output_grip: <prefix>dio_arm/digital_output_0
+    output_release: <prefix>dio_arm/digital_output_1
+    input_grasped: <prefix>dio_arm/digital_input_0
+ 

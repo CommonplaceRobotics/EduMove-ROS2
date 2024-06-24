@@ -1,0 +1,24 @@
+<?xml version="1.0" ?>
+<!-- <robot xmlns:xacro="http://www.ros.org/wiki/xacro"> -->
+<robot name="EduMove" xmlns:xacro="http://www.ros.org/wiki/xacro"  >
+
+	<xacro:arg name="hardware_protocol" default="cri"/>
+	
+	<xacro:include filename="$(find irc_ros_description)/urdf/platforms/eduMove_base.description.xacro" />
+	<xacro:include filename="$(find irc_ros_description)/urdf/robots/igus_rebel_6dof_01.description.xacro" /> 	
+
+	<xacro:macro name="EduMove_system" params="rebelprefix pltfprefix">
+		
+		<xacro:igus_rebel_6dof_01_description prefix="${rebelprefix}" continuous_last_joint="false" /> 
+		<xacro:EduMove_base prefix="${pltfprefix}" />
+
+		<joint name="RebelBase" type="fixed">
+			<parent link="base_link"/>
+			<child link="${rebelprefix}base_link"/>
+			<origin xyz="0.082 0 0.0725" rpy="0 0 0"/>
+			<axis xyz="0 1 0"/>
+		</joint>  
+	
+	</xacro:macro> 
+
+</robot>

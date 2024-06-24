@@ -1,0 +1,9 @@
+<library path="irc_ros_controllers">
+	<class name="irc_ros_controllers/VelocityPositionController"
+		   type="irc_ros_controllers::VelocityPositionController"
+		   base_class_type="controller_interface::ControllerInterface">
+		<description>
+			Simple controller for testing the position interface. Takes Velocity cmds and simply increases the current joint position as new target.
+		</description>
+	</class>
+</library>

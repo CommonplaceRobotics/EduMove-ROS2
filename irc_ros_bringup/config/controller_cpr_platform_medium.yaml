@@ -1,0 +1,76 @@
+<namespace>/controller_manager:
+  ros__parameters:
+    update_rate: 100 # 100Hz for CAN and 10Hz for CRI
+
+    joint_state_broadcaster:
+      type: joint_state_broadcaster/JointStateBroadcaster
+
+    cpr_platform_controller:
+        type: diff_drive_controller/DiffDriveController
+
+    dio_controller:
+      type: irc_ros_controllers/DIOController
+
+
+# <namespace>/dio_controller:
+#   ros__parameters:
+#     digital_inputs: 
+#       - <prefix>enable/digital_input_enable
+#       - <prefix>reset/digital_input_reset
+
+#     digital_outputs:
+#       - <prefix>enable/digital_output_enable
+#       - <prefix>reset/digital_output_reset
+<namespace>/dio_controller:
+  ros__parameters:
+    digital_inputs: 
+      - <prefix>dio_base/digital_input_0
+      - <prefix>dio_base/digital_input_1
+      - <prefix>dio_base/digital_input_2
+      - <prefix>dio_base/digital_input_3
+      - <prefix>dio_base/digital_input_4
+      - <prefix>dio_base/digital_input_5
+      - <prefix>dio_base/digital_input_6
+
+    digital_outputs:
+      - <prefix>dio_base/digital_output_0
+      - <prefix>dio_base/digital_output_1
+      - <prefix>dio_base/digital_output_2
+      - <prefix>dio_base/digital_output_3
+      - <prefix>dio_base/digital_output_4
+      - <prefix>dio_base/digital_output_5
+      - <prefix>dio_base/digital_output_6
+
+<namespace>/cpr_platform_controller:
+  ros__parameters:
+
+    left_wheel_names: ["<prefix>joint_wheel_1"]
+    right_wheel_names: ["<prefix>joint_wheel_2"]
+
+    odom_frame_id: <prefix>odom
+    base_frame_id: <prefix>base_link
+
+    enable_odom_tf: true    
+
+    wheel_separation: 0.47285
+    wheel_radius: 0.07457 # Measured, should be 0.07308 according to the CPRog settings
+
+    command_interfaces:
+      - velocity
+	  -position
+
+    state_interfaces:
+      - position
+      - velocity
+
+    state_publish_rate: 100.0 # Defaults to 50
+    action_monitor_rate: 100.0 # Defaults to 20
+
+    open_loop_control: true
+    allow_partial_joints_goal: true
+
+    # TODO: Goal_pose commands from Rviz2 send Twist instead of TwistStamped
+    # See if it is possible to change the rviz behaviour as TwistStamped is 
+    # becoming the new standard
+    use_stamped_vel: false
+
