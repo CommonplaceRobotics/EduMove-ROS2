@@ -74,7 +74,7 @@ def generate_launch_description():
     )
     robot_name_arg = DeclareLaunchArgument(
         "robot_name",
-        default_value="rebel_on_platform",
+        default_value="eduMove",
         choices=["rebel_on_platform", "eduMove"],
         description="Which igus ReBeL type to use",
     )

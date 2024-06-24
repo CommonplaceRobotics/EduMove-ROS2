@@ -33,7 +33,7 @@ set(INCLUDE_DEPENDS
 include_directories(include)
 
 add_library(${PROJECT_NAME} SHARED
-  src/dashboard_controller.cpp
+  # src/dashboard_controller.cpp
   src/dio_controller.cpp
   src/schmalz_ecbpmi_controller.cpp
   src/platform_controller.cpp
