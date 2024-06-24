@@ -13,7 +13,7 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 find_package(ament_cmake REQUIRED)
 
 
-install(DIRECTORY config launch params
+install(DIRECTORY config launch
         DESTINATION share/${PROJECT_NAME}
 )
 
