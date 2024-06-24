@@ -112,18 +112,6 @@ def generate_launch_description():
         choices=["mock_hardware", "gazebo", "cprcanv2", "cri"],
         description="Which hardware protocol or mock hardware should be used",
     )
-    # launch_dashboard_controller = DeclareLaunchArgument(
-    #     "launch_dashboard_controller",
-    #     default_value="false",
-    #     choices=["0", "1", "false", "true", "False", "True"],
-    # )
-
-    # launch_dio_controller = DeclareLaunchArgument(
-    #     "launch_dio_controller",
-    #     default_value="true",
-    #     choices=["0", "1", "false", "true", "False", "True"],
-    # )
-
 
     namespace = LaunchConfiguration("namespace")
     prefix = LaunchConfiguration("prefix")
@@ -284,6 +272,7 @@ def generate_launch_description():
     # ROS2 Control nodes
     description.add_action(control_node)
     description.add_action(joint_state_broadcaster)
+    
     # Dont delay start of the following nodes after `joint_state_broadcaster` as the EventHandler
     # causes issues with LaunchConfigurations
     description.add_action(robot_controller_node)
