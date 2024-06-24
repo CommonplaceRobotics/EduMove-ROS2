@@ -17,13 +17,6 @@ The CRI implementation is based on the [TruPhysics ROS package for the igus ReBe
 
 The CRI protocol requires a controller computer running a compatible version of TinyCtrl. It should be reachable under `192.168.3.11`, otherwise the IP needs to configured accordingly.
 
-## CPRCANv2
-This aims to implement a subset of the CPRCANv2 protocol. The protocol reference v1.5 released on 2022-07-18 was used, but not all functionality was deemed necessary. The EEPROM commands are not implemented here. Furthermore some undocumented functionality is implemented, notably a movement_ready bit available in more recent rebel axes firmwares.
-
-The can hardware interface works on a per module base. They are collected in the main `irc_ros_can` class for combined hardware interfaces, but otherwise work independatly from each other. Each module is configured via the `.ros2_control.xacro` files with their can_id and module type.
-Control works both over position and velocity values, in theory also torque control is available but untested. The proper motion information is received by the position state, the velocity state is a simply, noisy calculation between two position states, only used for mobile platform velocity control.
-Module info and control is done via the dashboard found in the `irc_ros_dashboard` package. For debugging the CAN communication `candump`, `cansend` and `ip link show can0` commands provide a good start.
-
 ### Hardware Interfaces
 #### Joint states
  - hardware_interface::HW_IF_POSITION
@@ -48,17 +41,12 @@ Module info and control is done via the dashboard found in the `irc_ros_dashboar
  - hardware_interface::HW_IF_EFFORT (Note: untested)
 #### DIO commands
  - (dio_name)_(number)
-#### Module commands
- - "dashboard_command"
     
 ### Movement commands
 The [CPRCAN V2 startup sequence](https://cpr-robots.com/download/CAN/CPR_CAN_Protocol_V2_UserGuide_en.pdf) combined with the desire to easily switch between position, velocity and torque control is integrated with an internal state that depends on the claimed interfaces. Only one of the interfaces may be used at the same time.
 ### Cartesian Commands
 - Cartesian velocity for robot arm
 - Cartesian velocity for platform 
-
-### State machine
-These are the current plans and/or statii of the different state machines. Once these are tested with all different hardware combinations these diagrams should be redone in a nicer design.
 
 #### Motor State
 ```mermaid
@@ -126,9 +114,9 @@ Checking the approximate timing with `candump can0,010:FFF -td` (010 is for the 
 
 ## Links
 ### Hardware communication
- - [CAN (including reference and C# demo client)](https://wiki.cpr-robots.com/index.php/CAN_Protocol)
  - [CRI](https://wiki.cpr-robots.com/index.php/CRI_Ethernet_Interface)
-
+ - [FastPositionInterface](TBA)
+ - 
 ### ROS2_Control Hardware Interface info:
  - https://control.ros.org/galactic/doc/getting_started/getting_started.html#hardware-components
  - https://control.ros.org/galactic/doc/ros2_control/hardware_interface/doc/hardware_components_userdoc.html
