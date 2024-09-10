@@ -17,16 +17,9 @@
 	<xacro:macro name="wheel" params="prefix x_reflect y_reflect">
 		<link name="${prefix}_link">
 			<visual>
-				<origin xyz="0 0 0" rpy="${pi/2} 0 0"/>
-				<!--<geometry>
-					<cylinder radius="${wheel_radius}" length="${wheel_width}"/>
-				</geometry>-->
 				<geometry>
-					<mesh filename="file://$(find irc_ros_description)/meshes/EduMove/wheel.dae"/>
+					<mesh filename="file://$(find irc_ros_description)/meshes/EduMove/wheel.dae" scale="0.001 0.001 0.001"/>
 				</geometry>
-				<!--<material name="Gray">
-					<color rgba="0.5 0.5 0.5 1.0"/>
-				</material>-->
 			</visual>
 		</link>
 
@@ -42,17 +35,15 @@
 		<!-- Robot Base -->
 		<link name="base_link">
 			<visual>
-				<!--<geometry>
-					<box size="${base_length} ${base_width} ${base_height}"/>
+				<geometry>
+					<mesh filename="file://$(find irc_ros_description)/meshes/EduMove/body.dae" scale="0.001 0.001 0.001"/>
 				</geometry>
 				<material name="Cyan">
-					<color rgba="0 1.0 1.0 1.0"/>
-				</material>-->
-				<geometry>
-					<mesh filename="file://$(find irc_ros_description)/meshes/EduMove/body.dae"/>
-				</geometry>
-				
+					<color rgba="0 1.0 1.0 0.5"/>
+				</material>
+				<origin rpy="0 0 0" xyz="0 0 -${base_height / 2}"/>
 			</visual>
+			<origin rpy="0 0 0" xyz="0 0 ${base_height / 2}"/>
 		</link>
 
 		

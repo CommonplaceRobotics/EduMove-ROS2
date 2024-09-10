@@ -4,9 +4,9 @@ This package showcases how to implement Igus Robot Control ROS2 for different us
 
 ## Keyboard Control
 
-This node can be used to control a mobile platform with Rebel arm via keyboard. Its main purpose is to show how to access all necessary State- and CommandInterfaces in order to control the platform via the CRI-Interface ([see also cpr-platform controller](https://github.com/CommonplaceRobotics/iRC_ROS/blob/RebelCarrier/irc_ros_controllers/src/platform_controller.cpp)). To run this example first launch irc_ros_bringup/launch/rebel_on_platform.launch.py
+This node can be used to control the igus EduMove via keyboard. Its main purpose is to show how to access all necessary State- and CommandInterfaces in order to control the platform via the CRI-Interface ([see also cpr-platform controller](https://github.com/CommonplaceRobotics/iRC_ROS/blob/RebelCarrier/irc_ros_controllers/src/platform_controller.cpp)). To run this example first launch irc_ros_bringup/launch/rebel_on_platform.launch.py
 ```
-ros2 launch irc_ros_bringup rebel_on_platform.launch.py hardware_protocol:=cri use_rviz:=false
+ros2 launch irc_ros_bringup EduMove.launch.py
 ```
 You can now launch the keyboard control node in a second terminal:
 
