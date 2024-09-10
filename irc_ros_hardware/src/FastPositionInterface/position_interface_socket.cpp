@@ -86,6 +86,8 @@ namespace irc_hardware
                 return;
             }
             // std::string iJointsString = Substring(temp, iJointsStart, eJointsStart, 1);
+           
+            //Read "internal" Joints
             if(iJointsStart != std::string::npos)
             {
                 std::array<double, 6> tempJoints = {0};
@@ -109,6 +111,54 @@ namespace irc_hardware
                     m_PositionsInUpdated.notify_one();
                 }                            
             }           
+
+            // Read external jjoints
+            if (eJointsStart != std::string::npos)
+            {
+                std::array<double, 3> tmpEJoints = {0};
+                std::stringstream ss(msg.substr(eJointsStart + 2));
+                for (size_t i=0; i<tmpEJoints; i++)
+                {
+                    double value =0.0;
+                    ss >> value;
+                    if(!ss.fail())
+                    {
+                        tempEJoints[i] = value;
+                    }
+                }
+                {
+                    std::unique_lock<std::mutex> lock(m_ReadMutex);
+                    for (int i=0; i<currentextJoints.size(); i++)
+                    {
+                        currentextJoints[i] = tmpEJoints[i];
+                    }
+                    m_PositionsInUpdated.notify_one();
+                }
+            }
+
+            //// Read cartesian position
+            //if (cartesianStart != std::string::npos)
+            //{
+            //    std::array<double, 6> tmpCart = {0};
+            //    std::stringstream ss(msg.substr(cartesianStart + 2));
+            //    for (size_t i=0; i<tmpEJoints; i++)
+            //    {
+            //        double value =0.0;
+            //        ss >> value;
+            //        if(!ss.fail())
+            //        {
+            //            tmpCart[i] = value;
+            //        }
+            //    }
+            //    {
+            //        std::unique_lock<std::mutex> lock(m_ReadMutex);
+            //        for (int i=0; i<currentextJoints.size(); i++)
+            //        {
+            //            currentCart[i] = tmpCart[i];
+            //        }
+            //        m_PositionsInUpdated.notify_one();
+            //    }
+            //}
         }     
     }
 
@@ -207,6 +257,13 @@ namespace irc_hardware
                     std::unique_lock<std::mutex> lock(m_JointStateMutex);
                     m_JointStateUpdated.wait_for(lock, std::chrono::milliseconds(200));
                     for (int i=0; i<6; i++)
+                    {   
+                        posMsgOut << joint_setPos_[i] 
+                                << " ";
+                    }
+
+                    posMsgOut << " E";
+                    for (int i=6; i<9; i++)
                     {   
                         posMsgOut << joint_setPos_[i] 
                                 << " ";
