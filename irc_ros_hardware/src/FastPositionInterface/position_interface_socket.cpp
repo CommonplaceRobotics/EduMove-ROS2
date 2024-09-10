@@ -117,13 +117,13 @@ namespace irc_hardware
             {
                 std::array<double, 3> tmpEJoints = {0};
                 std::stringstream ss(msg.substr(eJointsStart + 2));
-                for (size_t i=0; i<tmpEJoints; i++)
+                for (size_t i=0; i<tmpEJoints.size(); i++)
                 {
                     double value =0.0;
                     ss >> value;
                     if(!ss.fail())
                     {
-                        tempEJoints[i] = value;
+                        tmpEJoints[i] = value;
                     }
                 }
                 {
