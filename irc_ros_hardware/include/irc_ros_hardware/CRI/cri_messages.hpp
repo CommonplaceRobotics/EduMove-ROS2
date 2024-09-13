@@ -150,6 +150,7 @@ class Info : public CriMessage
 public:
   explicit Info(const std::string &);
 
+  int criVersion = -1;
   std::string info;
 };
 
