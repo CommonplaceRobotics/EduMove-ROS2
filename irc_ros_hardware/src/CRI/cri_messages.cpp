@@ -245,9 +245,9 @@ std::string CriMessage::VectorToString(std::vector<T> & vector)
   return msg.str();
 }
 
-Status::Status(const std::string & messageString) : CriMessage(MessageType::STATUS)
+Status::Status(const std::string & messageString, int criVersion) : CriMessage(MessageType::STATUS)
 {
-  // RCLCPP_INFO(rclcpp::get_logger("iRC_ROS::CRI:MESSAGE"), "%s", messageString.c_str());
+  // RCLCPP_INFO(rclcpp::get_logger("iRC_ROS::CRI"), "%s", messageString.c_str());
 
   std::string::size_type modeStart = messageString.find(cri_keywords::STATUS_MODE);
   std::string::size_type posJointSetPointStart =
@@ -278,7 +278,6 @@ Status::Status(const std::string & messageString) : CriMessage(MessageType::STAT
       rclcpp::get_logger("iRC_ROS::CRI"), "Bad parsing error for message \"%s\"",
       messageString.c_str());
     return;
-  
   }
 
   std::string modeString = ParseMessageString(
@@ -316,92 +315,36 @@ Status::Status(const std::string & messageString) : CriMessage(MessageType::STAT
 
   std::string::size_type errorSummaryEnd = errorString.find(" ");
   errorSummary = errorString.substr(0, errorSummaryEnd);
-
-
-
   std::string errorJointsString = errorString.substr(errorSummaryEnd + 1);
 
   mode = GetMode(modeString);
-
   FillArray(posJointSetPoint, posJointSetPointString);
-  
-  
   FillArray(posJointCurrent, posJointCurrentString);
-  
-  
   FillArray(posCartRobot, posCartRobotString);
-  
-  
   FillArray(posCartPlattform, posCartPlattformString);
-  try
+  overrideValue = std::stof(overrideValueString);
+  switch (criVersion)
   {
-      overrideValue = std::stof(overrideValueString);
-  }
-  catch(std::invalid_argument)
-  {
-    RCLCPP_FATAL(
-      rclcpp::get_logger("CRI ERROR"), "Value: %s", overrideValueString.c_str()
-    );
-    throw;
-  }
-  
-  try
-  {
-      digital_in = std::stoi(dinString);
-  }
-  catch(std::invalid_argument)
-  {
-    RCLCPP_FATAL(
-      rclcpp::get_logger("CRI ERROR"), "Value: %s", dinString.c_str()
-    );
-    throw;
-  }
-  try
-  {
+  case -1:
+      RCLCPP_WARN(rclcpp::get_logger("irc_ros_cri::cri_messages::Status"), "CriVersion not set! Cannot read DIOs!");
+  case 16:
+      // FIXME (MAB): DIO have 64 bit but only 32 bit are read here!
+      digital_in = std::stoi(dinString);    // TODO: Process further to actual meaning
       digital_out = std::stoi(doutString);  // TODO: Process further to actual meaning
+      break;
+  case 17:
+      // FIXME (MAB): DIO have 64 bit but only 32 bit are read here!
+      digital_in = std::stoi(dinString, nullptr, 16);    // TODO: Process further to actual meaning
+      digital_out = std::stoi(doutString, nullptr, 16);  // TODO: Process further to actual meaning
+      break;
+    default:
+        //wenn Status string vor INFO string geparsed wird hat criversion noch ungültigen wert
+        //und dios werden falsch gelesen
+        break;
   }
-  catch(std::invalid_argument)
-  {
-    RCLCPP_FATAL(
-      rclcpp::get_logger("CRI ERROR"), "Value: %s", doutString.c_str()
-    );
-    throw;
-  }
-  try
-  {
-      eStop = std::stoi(eStopString);       // TODO: Process further to actual meaning
-  }
-  catch(std::invalid_argument)
-  {
-    RCLCPP_FATAL(
-      rclcpp::get_logger("CRI ERROR"), "Value: %s", eStopString.c_str()
-    );
-    throw;
-  }
-  try
-  {
-      supply = std::stoi(supplyString);
-  }
-  catch(std::invalid_argument)
-  {
-    RCLCPP_FATAL(
-      rclcpp::get_logger("CRI ERROR"), "Value: %s", supplyString.c_str()
-    );
-    throw;
-  }
-
-  try
-  {
-    currentall = std::stoi(currentallString);
-  }
-  catch(std::invalid_argument)
-  {
-    RCLCPP_FATAL(
-      rclcpp::get_logger("CRI ERROR"), "Value: %s", currentallString.c_str()
-    );
-    throw;
-  }
-  
+  eStop = std::stoi(eStopString);       // TODO: Process further to actual meaning
+  supply = std::stoi(supplyString);
+  currentall = std::stoi(currentallString);
   FillArray(currentjoints, currentjointsString);
   // errorSummary already set above.
   FillArray(errorJoints, errorJointsString);  // TODO: Process further to actual meaning
@@ -567,6 +510,10 @@ Info::Info(const std::string & messageString) : CriMessage(MessageType::INFO)
   std::string::size_type infoStart =
     messageString.find(cri_keywords::TYPE_INFO) + cri_keywords::TYPE_INFO.size() + 1;
   info = messageString.substr(infoStart);
+
+  if (info.find("Version") != std::string::npos) {
+      sscanf(info.c_str(), "Version %*s %d", &criVersion);
+  }
 }
 
 ConfigType Config::GetConfigType(const std::string & msg)

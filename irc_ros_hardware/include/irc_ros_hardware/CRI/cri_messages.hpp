@@ -110,7 +110,7 @@ public:
   std::array<int, 16> errorJoints;
   Kinstate kinstate;
 
-  explicit Status(const std::string &);
+  explicit Status(const std::string & messageString, int criVersion = -1);
   Status();
   void Print();
 

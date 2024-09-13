@@ -63,6 +63,10 @@ void IrcRosCri::AliveThreadFunction()
     msg << "CRIEND" << std::endl;
 
     crisocket.SendMessage(msg.str());
+    if(criVersion ==-1)
+    {
+        Command("GetVersion");
+    }
     // RCLCPP_INFO(rclcpp::get_logger("AliveJog"), "%s", msg.str().c_str());
     std::this_thread::sleep_for(std::chrono::milliseconds(aliveWaitMs));
   }
@@ -81,18 +85,11 @@ void IrcRosCri::MessageThreadFunction()
 
       switch (type) {
         case cri_messages::MessageType::STATUS: {
-          try{
-            cri_messages::Status status = cri_messages::Status(msg);
+          
+            cri_messages::Status status = cri_messages::Status(msg, criVersion);
             currentStatus = status;
             ProcessStatus(currentStatus);
-          }
-          catch(std::invalid_argument)
-          {
-            RCLCPP_FATAL(
-              rclcpp::get_logger("CRI ERROR"), "Exception in MessageThreadFunction! Message received: %s", msg.c_str()
-            );
-            throw;
-          }
+          
                  
           break;
         }
@@ -132,6 +129,7 @@ void IrcRosCri::MessageThreadFunction()
 
         case cri_messages::MessageType::INFO: {
           cri_messages::Info info = cri_messages::Info(msg);
+          if (info.criVersion != -1) criVersion = info.criVersion;
           RCLCPP_INFO(rclcpp::get_logger("iRC_ROS"), "INFO: %s", info.info.c_str());
           break;
         }
