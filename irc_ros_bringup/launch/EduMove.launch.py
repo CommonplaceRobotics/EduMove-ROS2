@@ -14,7 +14,9 @@ from launch.substitutions import (
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
-
+from launch import LaunchContext, LaunchDescription, LaunchService
+from launch.event_handlers.on_process_start import OnProcessStart
+from launch.events.process import ProcessStarted
 from launch.actions import DeclareLaunchArgument, RegisterEventHandler
 from launch.conditions import IfCondition, LaunchConfigurationEquals
 from launch.substitutions import LaunchConfiguration
@@ -246,40 +248,75 @@ def generate_launch_description():
         arguments=["-d", rviz_file],
         condition=IfCondition(use_rviz),
     )
-
-    description = LaunchDescription()
-
-    # Launch args
-    description.add_action(namespace_arg)
-    description.add_action(prefix_arg)
-    description.add_action(controller_manager_name_arg)
-    description.add_action(robot_name_arg)
-    description.add_action(default_urdf_filename_arg)
-    description.add_action(default_robot_controller_filename_arg)
-    description.add_action(use_rviz_arg)
-    description.add_action(rviz_file_arg)
-    description.add_action(robot_urdf_arg)
-    description.add_action(robot_controller_config_arg)
-    description.add_action(rebel_version_arg)
-    description.add_action(gripper_arg)
-
-    description.add_action(hardware_protocol_arg)
-
-    # Robot nodes
-    description.add_action(robot_state_pub)
-    description.add_action(joint_state_pub)
-
-    # ROS2 Control nodes
-    description.add_action(control_node)
-    description.add_action(joint_state_broadcaster)
     
-    # Dont delay start of the following nodes after `joint_state_broadcaster` as the EventHandler
-    # causes issues with LaunchConfigurations
-    description.add_action(robot_controller_node)
-    description.add_action(platform_controller_node)
-    description.add_action(additional_controllers)
-    # description.add_action(dio_controller_node)
-    # UI nodes
-    description.add_action(rviz_node)
+    already_started_nodes = set()
 
-    return description
+    def start_next_node(event: ProcessStarted, context: LaunchContext):
+        print(f'node {event.process_name} started.')
+        already_started_nodes.update([event.process_name])
+        if len(already_started_nodes) == 1:
+            print(f'all required nodes are up, time to start node1')
+            return control_node
+
+
+
+    return LaunchDescription([
+        namespace_arg,
+        prefix_arg,
+        controller_manager_name_arg,
+        robot_name_arg,
+        default_urdf_filename_arg,
+        default_robot_controller_filename_arg,
+        use_rviz_arg,
+        rviz_file_arg,
+        robot_urdf_arg,
+        robot_controller_config_arg,
+        rebel_version_arg,
+        gripper_arg,
+        hardware_protocol_arg,
+        robot_state_pub,
+        RegisterEventHandler(event_handler=OnProcessStart(target_action=joint_state_pub,
+                                                          on_start=start_next_node)),
+        joint_state_pub,
+        joint_state_broadcaster,
+        robot_controller_node,
+        additional_controllers,
+        rviz_node,
+
+    ])
+    # description = LaunchDescription()
+
+    # # Launch args
+    # description.add_action(namespace_arg)
+    # description.add_action(prefix_arg)
+    # description.add_action(controller_manager_name_arg)
+    # description.add_action(robot_name_arg)
+    # description.add_action(default_urdf_filename_arg)
+    # description.add_action(default_robot_controller_filename_arg)
+    # description.add_action(use_rviz_arg)
+    # description.add_action(rviz_file_arg)
+    # description.add_action(robot_urdf_arg)
+    # description.add_action(robot_controller_config_arg)
+    # description.add_action(rebel_version_arg)
+    # description.add_action(gripper_arg)
+
+    # description.add_action(hardware_protocol_arg)
+
+    # # Robot nodes
+    # description.add_action(robot_state_pub)
+    # description.add_action(joint_state_pub)
+
+    # # ROS2 Control nodes
+    # description.add_action(control_node)
+    # description.add_action(joint_state_broadcaster)
+    
+    # # Dont delay start of the following nodes after `joint_state_broadcaster` as the EventHandler
+    # # causes issues with LaunchConfigurations
+    # description.add_action(robot_controller_node)
+    # description.add_action(platform_controller_node)
+    # description.add_action(additional_controllers)
+    # # description.add_action(dio_controller_node)
+    # # UI nodes
+    # description.add_action(rviz_node)
+
+    # return description
