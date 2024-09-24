@@ -2,7 +2,7 @@
 <!-- <robot xmlns:xacro="http://www.ros.org/wiki/xacro"> -->
 <robot name="EduMove" xmlns:xacro="http://www.ros.org/wiki/xacro"  >
 
-	<xacro:arg name="hardware_protocol" default="cri"/>
+	<!-- <xacro:arg name="hardware_protocol" default="cri"/> -->
 	
 	<xacro:include filename="$(find irc_ros_description)/urdf/platforms/eduMove_base.description.xacro" />
 	<xacro:include filename="$(find irc_ros_description)/urdf/robots/igus_rebel_6dof_01.description.xacro" /> 	

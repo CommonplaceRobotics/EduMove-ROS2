@@ -7,7 +7,7 @@
           <plugin>mock_components/GenericSystem</plugin>
         </xacro:if>
         <xacro:if value="${hardware_protocol == 'gazebo'}">
-            <plugin>gazebo_ros2_control/GazeboSystem</plugin>
+          <plugin>fake_components/GenericSystem</plugin>
         </xacro:if>
         <xacro:if value="${hardware_protocol == 'cprcanv2'}">
           <plugin>irc_hardware/IrcRosCan</plugin>
