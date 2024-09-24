@@ -9,10 +9,14 @@
             
             <hardware>
                 <xacro:if value="${hardware_protocol == 'cri'}">
-                <plugin>irc_hardware/IrcRosCri</plugin>
-                <param name="ip">192.168.3.11</param>
+                    <plugin>irc_hardware/IrcRosCri</plugin>
+                    <param name="ip">192.168.3.11</param>
+                </xacro:if>
+                <xacro:if value="${hardware_protocol == 'gazebo'}">
+                    <plugin>fake_components/GenericSystem</plugin>
                 </xacro:if>
             </hardware>
+            
 
             <xacro:igus_rebel_6dof_01_ros2_control prefix="${rebelprefix}" hardware_protocol="${hardware_protocol}" continuous_last_joint="false"/>
             <xacro:EduMove_baseControl prefix="${pltfprefix}" hardware_protocol="${hardware_protocol}"/>

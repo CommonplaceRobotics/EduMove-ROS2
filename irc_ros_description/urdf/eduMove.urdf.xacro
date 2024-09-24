@@ -9,5 +9,5 @@
   <xacro:include filename="$(find irc_ros_description)/urdf/serviceRobots/eduMove.ros2_control.xacro" />
 
   <xacro:EduMove_system pltfprefix="platform" rebelprefix="rebel"/>
-  <xacro:EduMoveControl pltfprefix="platform" rebelprefix="rebel" hardware_protocol='cri'/>
+  <xacro:EduMoveControl pltfprefix="platform" rebelprefix="rebel" hardware_protocol="$(arg hardware_protocol)"/>
 </robot>

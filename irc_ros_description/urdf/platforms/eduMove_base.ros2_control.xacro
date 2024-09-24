@@ -2,12 +2,15 @@
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
   <xacro:macro name="EduMove_baseControl" params="prefix hardware_protocol">
          
-      <!-- <hardware>
+      <hardware>
         <xacro:if value="${hardware_protocol == 'cri'}">
           <plugin>irc_hardware/IrcRosCri</plugin>
           <param name="ip">192.168.3.11</param>
         </xacro:if>
-      </hardware> -->
+        <xacro:if value="${hardware_protocol == 'gazebo'}">
+          <plugin>fake_components/GenericSystem</plugin>
+      </xacro:if>
+      </hardware>
 
       <!-- Include the joint module macro -->
       <xacro:include filename="$(find irc_ros_description)/urdf/modules/din_rail.ros2_control.xacro" />
